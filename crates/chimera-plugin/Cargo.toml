@@ -1,0 +1,16 @@
+[package]
+name = "chimera-plugin"
+version = "0.4.0"
+edition = "2024"
+license = "GPL-3.0-or-later"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+chimera = { path = "../chimera" }
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", rev = "de421011f41a6d10fc8c7a6084e4f4dee0143683" }
+nih_plug_egui = { git = "https://github.com/robbert-vdh/nih-plug.git", rev = "de421011f41a6d10fc8c7a6084e4f4dee0143683" }
+flate2 = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

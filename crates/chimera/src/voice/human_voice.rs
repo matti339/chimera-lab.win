@@ -617,3 +617,54 @@ impl HumanVoice {
         let _ = n_t;
     }
 }
+
+impl HumanVoice {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        self.fs_out.clone_from(&source.fs_out);
+        self.m.clone_from(&source.m);
+        self.fs.clone_from(&source.fs);
+        self.airway.restore_same_layout(&source.airway);
+        self.glottis.clone_from(&source.glottis);
+        self.artic.clone_from(&source.artic);
+        self.source.clone_from(&source.source);
+        self.dec.restore_same_layout(&source.dec);
+        self.ctrl_every.clone_from(&source.ctrl_every);
+        self.ctrl_counter.clone_from(&source.ctrl_counter);
+        self.gate.clone_from(&source.gate);
+        self.gate_target.clone_from(&source.gate_target);
+        self.score_breath_hold.clone_from(&source.score_breath_hold);
+        self.p_lung.clone_from(&source.p_lung);
+        self.p_lung_now.clone_from(&source.p_lung_now);
+        self.p_lung_step.clone_from(&source.p_lung_step);
+        self.f0.clone_from(&source.f0);
+        self.output_gain.clone_from(&source.output_gain);
+        self.dc_x.clone_from(&source.dc_x);
+        self.dc_y.clone_from(&source.dc_y);
+        self.dc_coef.clone_from(&source.dc_coef);
+        self.rms_acc.clone_from(&source.rms_acc);
+        self.rms_count.clone_from(&source.rms_count);
+        self.flow_sm.clone_from(&source.flow_sm);
+        self.scope_area.clone_from(&source.scope_area);
+        self.scope_flow.clone_from(&source.scope_flow);
+        self.scope_pos.clone_from(&source.scope_pos);
+        self.cycle_starts.clone_from(&source.cycle_starts);
+        self.cycle_idx.clone_from(&source.cycle_idx);
+        self.last_phase.clone_from(&source.last_phase);
+        self.out_acc.clone_from(&source.out_acc);
+        self.out_count.clone_from(&source.out_count);
+        self.sub.clone_from(&source.sub);
+        self.score.restore_same_layout(&source.score);
+        self.clock.clone_from(&source.clock);
+        self.blend.clone_from(&source.blend);
+        self.base_abduction.clone_from(&source.base_abduction);
+        self.base_closure.clone_from(&source.base_closure);
+        self.score_f0.clone_from(&source.score_f0);
+        self.lim_env.clone_from(&source.lim_env);
+        self.lim_hold.clone_from(&source.lim_hold);
+        self.lim_hold_n.clone_from(&source.lim_hold_n);
+        self.lim_release.clone_from(&source.lim_release);
+        self.max_penetration.clone_from(&source.max_penetration);
+    }
+}

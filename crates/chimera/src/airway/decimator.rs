@@ -80,3 +80,16 @@ impl Decimator {
         true
     }
 }
+
+impl Decimator {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        self.factor.clone_from(&source.factor);
+        self.h.clone_from(&source.h);
+        self.buf.clone_from(&source.buf);
+        self.pos.clone_from(&source.pos);
+        self.count.clone_from(&source.count);
+        self.value.clone_from(&source.value);
+    }
+}

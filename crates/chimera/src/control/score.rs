@@ -467,3 +467,13 @@ mod tests {
         assert_eq!(Label::new("aaaaaaaaaaaaaaaaaaaaaaaʃ").as_str(), "aaaaaaaaaaaaaaaaaaaaaaa");
     }
 }
+
+impl GestureScore {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        self.gestures.clone_from(&source.gestures);
+        self.end.clone_from(&source.end);
+        self.dropped.clone_from(&source.dropped);
+    }
+}

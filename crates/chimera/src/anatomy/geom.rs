@@ -223,3 +223,12 @@ pub fn tangent_angle(c: Vec2, r: f64, p: Vec2, upper: bool) -> Option<f64> {
     let off = acos(r / d);
     Some(if upper { base + off } else { base - off })
 }
+
+impl Polyline {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        self.xs.clone_from(&source.xs);
+        self.ys.clone_from(&source.ys);
+    }
+}

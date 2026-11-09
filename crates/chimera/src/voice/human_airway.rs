@@ -324,3 +324,51 @@ impl HumanAirway {
         self.noise_list = list;
     }
 }
+
+impl HumanAirway {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        self.net.restore_same_layout(&source.net);
+        self.tract.restore_same_layout(&source.tract);
+        self.body.clone_from(&source.body);
+        self.trachea.clone_from(&source.trachea);
+        self.pharynx.clone_from(&source.pharynx);
+        self.oral.clone_from(&source.oral);
+        self.nasal.clone_from(&source.nasal);
+        self.fossa.clone_from(&source.fossa);
+        self.lungs.clone_from(&source.lungs);
+        self.glottis_port.clone_from(&source.glottis_port);
+        self.velum_port.clone_from(&source.velum_port);
+        self.rad_lips.clone_from(&source.rad_lips);
+        self.rad_nose.clone_from(&source.rad_nose);
+        self.n_ph.clone_from(&source.n_ph);
+        self.n_or.clone_from(&source.n_or);
+        self.ph_areas.clone_from(&source.ph_areas);
+        self.or_areas.clone_from(&source.or_areas);
+        self.ph_min.clone_from(&source.ph_min);
+        self.or_min.clone_from(&source.or_min);
+        self.ph_len.clone_from(&source.ph_len);
+        self.or_len.clone_from(&source.or_len);
+        self.noise_gain.clone_from(&source.noise_gain);
+        self.max_area_rate.clone_from(&source.max_area_rate);
+        self.area_rate_gain.clone_from(&source.area_rate_gain);
+        self.seal_rate.clone_from(&source.seal_rate);
+        self.seal_lo.clone_from(&source.seal_lo);
+        self.seal_hi.clone_from(&source.seal_hi);
+        self.seal_ease.clone_from(&source.seal_ease);
+        self.base_dt.clone_from(&source.base_dt);
+        self.noise_list.clone_from(&source.noise_list);
+        self.scratch_frame.restore_same_layout(&source.scratch_frame);
+        match (&mut self.frame,&source.frame) {
+            (Some(dest),Some(src))=>dest.restore_same_layout(src),
+            (None,None)=>{},
+            _=>panic!("Restore requires the same warmed frame layout"),
+        }
+        match (&mut self.base,&source.base) {
+            (Some(dest),Some(src))=>{for i in 0..4{dest[i].clone_from(&src[i]);}},
+            (None,None)=>{},
+            _=>panic!("Restore requires the same warmed area layout"),
+        }
+    }
+}

@@ -1504,3 +1504,82 @@ pub fn clamp_to_wall(points: &[Vec2], wall: &[Vec2]) -> Vec<Vec2> {
         })
         .collect()
 }
+
+impl HumanFrame {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        self.outer.clone_from(&source.outer);
+        self.inner.clone_from(&source.inner);
+        self.tongue.clone_from(&source.tongue);
+        self.velum.clone_from(&source.velum);
+        self.upper_lip.clone_from(&source.upper_lip);
+        self.lower_lip.clone_from(&source.lower_lip);
+        self.upper_teeth.clone_from(&source.upper_teeth);
+        self.lower_teeth.clone_from(&source.lower_teeth);
+        self.jaw_bone.clone_from(&source.jaw_bone);
+        self.epiglottis.clone_from(&source.epiglottis);
+        self.nasal_cavity.clone_from(&source.nasal_cavity);
+        self.glottis.clone_from(&source.glottis);
+        self.grid.clone_from(&source.grid);
+        self.length.clone_from(&source.length);
+        self.pharynx_length.clone_from(&source.pharynx_length);
+        self.teeth_s.clone_from(&source.teeth_s);
+        self.lip_s.clone_from(&source.lip_s);
+        self.velum_port.clone_from(&source.velum_port);
+        self.lip_area.clone_from(&source.lip_area);
+        self.tongue_center.clone_from(&source.tongue_center);
+        self.tongue_radius.clone_from(&source.tongue_radius);
+        self.tip.clone_from(&source.tip);
+        self.split_index.clone_from(&source.split_index);
+    }
+}
+
+impl Scratch {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        self.tmp.clone_from(&source.tmp);
+        self.cross_t.clone_from(&source.cross_t);
+        self.cross_exit.clone_from(&source.cross_exit);
+        self.vel.clone_from(&source.vel);
+        self.vel_oral.clone_from(&source.vel_oral);
+        self.vel_nasal.clone_from(&source.vel_nasal);
+        self.outer.restore_same_layout(&source.outer);
+        self.inner.restore_same_layout(&source.inner);
+        self.upper_lip_in.clone_from(&source.upper_lip_in);
+        self.lower_lip_in.clone_from(&source.lower_lip_in);
+        self.lip_out.clone_from(&source.lip_out);
+        self.root.clone_from(&source.root);
+        self.arc_pts.clone_from(&source.arc_pts);
+        self.blade.clone_from(&source.blade);
+        self.under.clone_from(&source.under);
+        self.back.clone_from(&source.back);
+        self.roof.restore_same_layout(&source.roof);
+        self.cum.clone_from(&source.cum);
+        self.tip_pts.clone_from(&source.tip_pts);
+        self.outline.restore_same_layout(&source.outline);
+    }
+}
+
+impl HumanVocalTract {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        self.body.clone_from(&source.body);
+        self.k.clone_from(&source.k);
+        self.phar_wall.clone_from(&source.phar_wall);
+        self.palate.clone_from(&source.palate);
+        self.pns.clone_from(&source.pns);
+        self.condyle.clone_from(&source.condyle);
+        self.polar_c.clone_from(&source.polar_c);
+        self.polar_c2.clone_from(&source.polar_c2);
+        self.nasal_cavity.clone_from(&source.nasal_cavity);
+        self.sc.restore_same_layout(&source.sc);
+        self.contact_tip.clone_from(&source.contact_tip);
+        self.contact_body.clone_from(&source.contact_body);
+        self.contact_tip_n.clone_from(&source.contact_tip_n);
+        self.contact_body_n.clone_from(&source.contact_body_n);
+        self.area_law.clone_from(&source.area_law);
+    }
+}

@@ -1217,3 +1217,99 @@ impl AirwayNetwork {
         self.rad_prev_total = 0.0;
     }
 }
+
+impl AirwayNetwork {
+    /// Restore a warmed snapshot with the same anatomy/layout, reusing allocated buffers.
+    /// The destination must already have capacity for every snapshot buffer.
+    pub(crate) fn restore_same_layout(&mut self, source: &Self) {
+        assert_eq!(self.n_nodes, source.n_nodes);
+        assert_eq!(self.n_branches, source.n_branches);
+        // Tube names/specifications are immutable for a fixed anatomy.
+        self.fs.clone_from(&source.fs);
+        self.t.clone_from(&source.t);
+        self.inv_t.clone_from(&source.inv_t);
+        self.tubes.clone_from(&source.tubes);
+        self.tube_length.clone_from(&source.tube_length);
+        self.finalized.clone_from(&source.finalized);
+        self.n_nodes.clone_from(&source.n_nodes);
+        self.p.clone_from(&source.p);
+        self.area.clone_from(&source.area);
+        self.area_target.clone_from(&source.area_target);
+        self.area_step.clone_from(&source.area_step);
+        self.amin.clone_from(&source.amin);
+        self.amin_target.clone_from(&source.amin_target);
+        self.amin_step.clone_from(&source.amin_step);
+        self.is_junction.clone_from(&source.is_junction);
+        self.inv_lsum.clone_from(&source.inv_lsum);
+        self.inv_amin.clone_from(&source.inv_amin);
+        self.nbr_start.clone_from(&source.nbr_start);
+        self.nbr_list.clone_from(&source.nbr_list);
+        self.spill.clone_from(&source.spill);
+        self.vol_src1.clone_from(&source.vol_src1);
+        self.vol_src2.clone_from(&source.vol_src2);
+        self.vol_lp_coef.clone_from(&source.vol_lp_coef);
+        self.volume_source_hz.clone_from(&source.volume_source_hz);
+        self.squeeze_area.clone_from(&source.squeeze_area);
+        self.enable_volume_source.clone_from(&source.enable_volume_source);
+        self.enable_junction_floor.clone_from(&source.enable_junction_floor);
+        self.energy_safe.clone_from(&source.energy_safe);
+        self.symmetric_kinetic.clone_from(&source.symmetric_kinetic);
+        self.dx.clone_from(&source.dx);
+        self.dx_target.clone_from(&source.dx_target);
+        self.dx_step.clone_from(&source.dx_step);
+        self.vol.clone_from(&source.vol);
+        self.inv_a.clone_from(&source.inv_a);
+        self.half_l.clone_from(&source.half_l);
+        self.half_r.clone_from(&source.half_r);
+        self.sqrt_a.clone_from(&source.sqrt_a);
+        self.flow_sum.clone_from(&source.flow_sum);
+        self.ext_flow.clone_from(&source.ext_flow);
+        self.fixed.clone_from(&source.fixed);
+        self.wall_m.clone_from(&source.wall_m);
+        self.wall_r.clone_from(&source.wall_r);
+        self.wall_k.clone_from(&source.wall_k);
+        self.wall_perim.clone_from(&source.wall_perim);
+        self.wall_rad.clone_from(&source.wall_rad);
+        self.has_wall.clone_from(&source.has_wall);
+        self.wall_y.clone_from(&source.wall_y);
+        self.wall_v.clone_from(&source.wall_v);
+        self.wall_u.clone_from(&source.wall_u);
+        self.node_tube.clone_from(&source.node_tube);
+        self.visc_f.clone_from(&source.visc_f);
+        self.rad_of.clone_from(&source.rad_of);
+        self.n_branches.clone_from(&source.n_branches);
+        self.b_a.clone_from(&source.b_a);
+        self.b_b.clone_from(&source.b_b);
+        self.b_kind.clone_from(&source.b_kind);
+        self.port_specs.clone_from(&source.port_specs);
+        self.u.clone_from(&source.u);
+        self.mom.clone_from(&source.mom);
+        self.l_prev.clone_from(&source.l_prev);
+        self.psrc.clone_from(&source.psrc);
+        self.port_area.clone_from(&source.port_area);
+        self.port_area_target.clone_from(&source.port_area_target);
+        self.port_area_step.clone_from(&source.port_area_step);
+        self.port_len.clone_from(&source.port_len);
+        self.port_kin.clone_from(&source.port_kin);
+        self.port_kex.clone_from(&source.port_kex);
+        self.port_slit.clone_from(&source.port_slit);
+        self.port_half.clone_from(&source.port_half);
+        self.port_extra_r.clone_from(&source.port_extra_r);
+        self.branch_area.clone_from(&source.branch_area);
+        self.rad_nodes.clone_from(&source.rad_nodes);
+        self.rad_ul.clone_from(&source.rad_ul);
+        self.rad_l_prev.clone_from(&source.rad_l_prev);
+        self.rad_u.clone_from(&source.rad_u);
+        self.rad_prev_total.clone_from(&source.rad_prev_total);
+        self.noise.clone_from(&source.noise);
+        self.noise_next.clone_from(&source.noise_next);
+        self.rng.clone_from(&source.rng);
+        self.pending_fixed.clone_from(&source.pending_fixed);
+        self.closed_area.clone_from(&source.closed_area);
+        self.min_node_area.clone_from(&source.min_node_area);
+        self.viscous_scale.clone_from(&source.viscous_scale);
+        self.viscous_omega.clone_from(&source.viscous_omega);
+        self.noise_scale.clone_from(&source.noise_scale);
+        self.out.clone_from(&source.out);
+    }
+}

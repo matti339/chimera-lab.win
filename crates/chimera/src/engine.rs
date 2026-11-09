@@ -284,3 +284,15 @@ impl Engine {
         self.voice.telemetry(out);
     }
 }
+
+impl Engine {
+    /// Restore a pre-warmed human voice of the same anatomy/sample rate without heap allocation.
+    /// Capture the snapshot after warming this engine; do not use a different body's snapshot.
+    pub fn reset_human_from(&mut self, snapshot: &HumanVoice) {
+        assert!(self.creature.is_none());
+        assert_eq!(self.sample_rate,snapshot.fs_out);
+        self.voice.restore_same_layout(snapshot);
+        self.pos=(snapshot.clock*self.sample_rate).round() as u64;
+        self.gate_level=0.;self.scratch.clear();self.beat.stop();
+    }
+}

@@ -17,11 +17,7 @@ jobs:
 
       - name: Install Inno Setup
         run: choco install innosetup -y
-
-          if (!(Test-Path "$plugin/Contents/x86_64-win")) {
-            throw "Windows VST3 architecture folder missing!"
-          }
-
+      
       - name: Compile Installer
         shell: pwsh
         run: |

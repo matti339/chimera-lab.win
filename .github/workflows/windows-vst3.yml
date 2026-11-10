@@ -1,0 +1,60 @@
+
+name: Windows VST3 Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build Chimera Lab for Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.89.0
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build VST3
+        run: cargo build --locked --release -p chimera-plugin
+
+      - name: Run plugin tests
+        run: cargo test --locked --release -p chimera-plugin
+
+      - name: Package Windows VST3
+        shell: pwsh
+        run: |
+          $dll = "target/release/chimera_plugin.dll"
+
+          if (!(Test-Path $dll)) {
+            throw "Plugin DLL not found: $dll"
+          }
+
+          $bundle = "Chimera Lab.vst3"
+          $pluginDir = "$bundle/Contents/x86_64-win"
+
+          New-Item -ItemType Directory -Force -Path $pluginDir
+
+          Copy-Item $dll "$pluginDir/Chimera Lab.vst3"
+
+          Compress-Archive `
+            -Path $bundle `
+            -DestinationPath "Chimera-Lab-Windows-VST3.zip" `
+            -Force
+
+      - name: Upload Windows VST3
+        uses: actions/upload-artifact@v4
+        with:
+          name: Chimera-Lab-Windows-VST3
+          path: Chimera-Lab-Windows-VST3.zip
+          if-no-files-found: error

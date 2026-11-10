@@ -26,8 +26,8 @@ jobs:
           Write-Host "Windows VST3 found successfully!"
           Get-Item $plugin | Format-List Name, Length
 
-      - name: Install Inno Setup
-        run: choco install innosetup -y
+            - name: Install Inno Setup
+        run: choco upgrade innosetup -y --no-progress
       
       - name: Compile Installer
         shell: pwsh

@@ -9,11 +9,34 @@ on:
 
 jobs:
   installer:
+    name: Build Chimera Lab Windows Installer
     runs-on: windows-latest
 
     steps:
+      # 1. Download repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      # 2. Install Rust
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.89.0
+
+      # 3. Cache dependencies
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      # 4. Compile Chimera Lab
+      - name: Build Chimera Lab
+        run: cargo build --locked --release -p chimera-plugin
+
+      # 5. Create Windows VST3
+      - name: Create Windows VST3 Bundle
+        shell: pwsh
+        run: ./tools/plugin/bundle-windows.ps1
+
+      # 6. Verify plugin
       - name: Verify Windows VST3
         shell: pwsh
         run: |
@@ -26,13 +49,19 @@ jobs:
           Write-Host "Windows VST3 found successfully!"
           Get-Item $plugin | Format-List Name, Length
 
-            - name: Install Inno Setup
+      # 7. Install Inno Setup
+      - name: Install Inno Setup
         run: choco upgrade innosetup -y --no-progress
-      
+
+      # 8. Compile installer
       - name: Compile Installer
         shell: pwsh
         run: |
           $compiler = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+
+          if (!(Test-Path $compiler)) {
+            throw "Inno Setup compiler not found!"
+          }
 
           & $compiler ".github/installer/ChimeraLab.iss"
 
@@ -40,9 +69,22 @@ jobs:
             throw "Installer compilation failed!"
           }
 
+      # 9. Verify installer
+      - name: Verify Installer
+        shell: pwsh
+        run: |
+          $installer = "dist/Chimera-Lab-Windows-Setup.exe"
+
+          if (!(Test-Path $installer)) {
+            throw "Installer EXE was not created!"
+          }
+
+          Get-Item $installer | Format-List Name, Length
+
+      # 10. Upload installer
       - name: Upload Installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
-          name: Chimera-Lab-Windows-Installer
+          name: Chimera-Lab-Windows-Setup
           path: dist/Chimera-Lab-Windows-Setup.exe
           if-no-files-found: error

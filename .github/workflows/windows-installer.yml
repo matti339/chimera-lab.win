@@ -1,0 +1,50 @@
+
+name: Windows Installer
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  installer:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Verify VST3 bundle
+        shell: pwsh
+        run: |
+          $plugin = "dist/Chimera Lab.vst3"
+
+          if (!(Test-Path $plugin)) {
+            throw "Chimera Lab.vst3 bundle not found!"
+          }
+
+          if (!(Test-Path "$plugin/Contents/x86_64-win")) {
+            throw "Windows VST3 architecture folder missing!"
+          }
+
+      - name: Compile Installer
+        shell: pwsh
+        run: |
+          $compiler = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+
+          & $compiler ".github/installer/ChimeraLab.iss"
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Installer compilation failed!"
+          }
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Chimera-Lab-Windows-Installer
+          path: dist/Chimera-Lab-Windows-Setup.exe
+          if-no-files-found: error

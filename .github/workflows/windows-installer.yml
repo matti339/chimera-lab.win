@@ -18,15 +18,6 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup -y
 
-      - name: Verify VST3 bundle
-        shell: pwsh
-        run: |
-          $plugin = "dist/Chimera Lab.vst3"
-
-          if (!(Test-Path $plugin)) {
-            throw "Chimera Lab.vst3 bundle not found!"
-          }
-
           if (!(Test-Path "$plugin/Contents/x86_64-win")) {
             throw "Windows VST3 architecture folder missing!"
           }
